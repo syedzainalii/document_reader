@@ -1,0 +1,179 @@
+import { authService } from './auth';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+// Helper to get auth headers
+const getAuthHeaders = () => {
+  const token = authService.getToken();
+  return {
+    'Authorization': token ? `Bearer ${token}` : '',
+  };
+};
+
+export interface Student {
+  id: number;
+  student_id: string;
+  full_name: string;
+  email?: string;
+  phone?: string;
+  department?: string;
+  program?: string;
+  year_of_study?: string;
+  document_type?: string;
+  extracted_text?: string;
+  original_image_path?: string;
+  photo_path?: string;
+  processed_image_path?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SearchResponse {
+  total: number;
+  page: number;
+  page_size: number;
+  students: Student[];
+}
+
+export interface UploadResponse {
+  success: boolean;
+  message: string;
+  student?: Student;
+  ocr_result?: {
+    success: boolean;
+    extracted_text?: string;
+    student_data?: Record<string, any>;
+    photo_extracted: boolean;
+    error?: string;
+  };
+}
+
+export interface Statistics {
+  total_students: number;
+  recent_uploads: number;
+  departments: Array<{ name: string; count: number }>;
+}
+
+export const api = {
+  async uploadDocument(file: File): Promise<UploadResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${API_URL}/api/upload`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Upload failed');
+    }
+
+    return response.json();
+  },
+
+  async searchStudents(query?: string, page = 1, pageSize = 50): Promise<SearchResponse> {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      page_size: pageSize.toString(),
+    });
+
+    if (query) {
+      params.append('query', query);
+    }
+
+    const response = await fetch(`${API_URL}/api/students?${params}`, {
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch students');
+    }
+
+    return response.json();
+  },
+
+  async getStudent(id: number): Promise<Student> {
+    const response = await fetch(`${API_URL}/api/students/${id}`, {
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch student');
+    }
+
+    return response.json();
+  },
+
+  async updateStudent(id: number, data: Partial<Student>): Promise<Student> {
+    const response = await fetch(`${API_URL}/api/students/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update student');
+    }
+
+    return response.json();
+  },
+
+  async deleteStudent(id: number): Promise<void> {
+    const response = await fetch(`${API_URL}/api/students/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete student');
+    }
+  },
+
+  async exportToExcel(query?: string): Promise<Blob> {
+    const params = new URLSearchParams();
+    if (query) {
+      params.append('query', query);
+    }
+
+    const response = await fetch(`${API_URL}/api/export/excel?${params}`, {
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to export data');
+    }
+
+    return response.blob();
+  },
+
+  async getStatistics(): Promise<Statistics> {
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await fetch(`${API_URL}/api/stats`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Statistics fetch failed:', response.status, errorText);
+      throw new Error(`Failed to fetch statistics: ${response.status}`);
+    }
+
+    return response.json();
+  },
+
+  getFileUrl(studentId: string, filename: string): string {
+    return `${API_URL}/api/files/${studentId}/${filename}`;
+  },
+};

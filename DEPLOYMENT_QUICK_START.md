@@ -1,14 +1,13 @@
-# 🚀 Quick Deployment Guide
+# 🚀 Quick Deployment Guide - Railway
 
 ## Current Status
 
 ✅ **Frontend Deployed**: https://document-reader-chi.vercel.app/  
-⏳ **Backend**: Ready to deploy  
+⏳ **Backend**: Ready to deploy on Railway  
 ✅ **Database**: Neon PostgreSQL configured  
+✅ **Configuration**: Pure FastAPI (no Vercel serverless)
 
-## Next Steps (Choose One Platform)
-
-### Option A: Deploy to Railway (Recommended - Easiest)
+## Deploy Backend to Railway
 
 1. **Go to Railway**
    - Visit: https://railway.app/
@@ -46,39 +45,7 @@
    - Example: `https://document-reader-api.up.railway.app`
 
 6. **Copy Your Backend URL** for the next step
-
----
-
-### Option B: Deploy to Render
-
-1. **Go to Render**
-   - Visit: https://render.com/
-   - Sign up/login with GitHub
-
-2. **Create New Web Service**
-   - Click "New +" → "Web Service"
-   - Connect `syedzainalii/document_reader`
-
-3. **Configure**
-   - **Name**: document-reader-api
-   - **Root Directory**: `server`
-   - **Environment**: Python 3
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-
-4. **Add System Dependencies**
-   - Expand "Advanced" settings
-   - Add Pre-Deploy Command:
-   ```bash
-   apt-get update && apt-get install -y tesseract-ocr tesseract-ocr-eng
-   ```
-
-5. **Set Environment Variables**
-   Same as Railway (see above)
-
-6. **Deploy**
-   - Click "Create Web Service"
-   - Get your URL like: `https://document-reader-api.onrender.com`
+   - Example: `https://document-reader-production.up.railway.app`
 
 ---
 
@@ -175,9 +142,8 @@ Before going to production:
 ## Cost Estimates
 
 **Railway**: $5 free credit/month → ~$10-15/month for light usage  
-**Render**: Free tier available → $7/month for production  
-**Vercel**: Free for hobby projects  
-**Neon**: 0.5 GB free → $19/month for more  
+**Vercel** (Frontend only): Free for hobby projects  
+**Neon** (Database): 0.5 GB free → $19/month for more  
 
 ---
 

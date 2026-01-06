@@ -1,12 +1,14 @@
-# Backend Deployment Guide
+# Backend Deployment Guide - Railway
 
 ## Your Database Information
 - **Provider**: Neon PostgreSQL
 - **Connection String**: `postgresql://neondb_owner:npg_vlSVX8gNGE1D@ep-fragrant-hat-a1wl29ds-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require`
 
-## Deployment Options
+## Deployment Configuration
 
-### Option 1: Railway (Recommended - Easiest)
+This backend is configured as a standard FastAPI application (no serverless) optimized for Railway deployment.
+
+## Deploy to Railway
 
 Railway is perfect for Python apps with heavy dependencies like OCR.
 
@@ -52,53 +54,7 @@ Railway is perfect for Python apps with heavy dependencies like OCR.
 7. **Enable Public Domain**
    - Go to Settings → Networking
    - Click "Generate Domain"
-   - Copy your public URL
-
-### Option 2: Render
-
-Render offers a free tier and good support for system dependencies.
-
-#### Steps:
-
-1. **Create Render Account**
-   - Go to: https://render.com/
-   - Sign up with GitHub
-
-2. **Create New Web Service**
-   - Click "New +" → "Web Service"
-   - Connect your GitHub repository
-   - Select `document_reader`
-
-3. **Configure Service**
-   - **Name**: document-reader-api
-   - **Root Directory**: `server`
-   - **Environment**: Python 3
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-
-4. **Add System Dependencies**
-   - In "Advanced" settings, add these shell commands to run before build:
-   ```bash
-   apt-get update && apt-get install -y tesseract-ocr tesseract-ocr-eng
-   ```
-
-5. **Set Environment Variables**
-   Add these in the "Environment" section:
-   ```
-   DATABASE_URL=postgresql://neondb_owner:npg_vlSVX8gNGE1D@ep-fragrant-hat-a1wl29ds-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
-   ALLOWED_ORIGINS=https://document-reader-chi.vercel.app
-   ADMIN_USERNAME=admin
-   ADMIN_PASSWORD=<your-secure-password>
-   JWT_SECRET_KEY=<generate-a-random-string>
-   DEBUG=False
-   TESSERACT_CMD=/usr/bin/tesseract
-   PORT=10000
-   ```
-
-6. **Deploy**
-   - Click "Create Web Service"
-   - Render will build and deploy
-   - You'll get a URL like: `https://document-reader-api.onrender.com`
+   - Copy your public URL (e.g., `https://document-reader-production.up.railway.app`)
 
 ## After Deployment
 

@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     # Database
     database_url: str = "postgresql://postgres:postgres@localhost:5432/ned_university_docs"
     
+    # Port (for deployment platforms)
+    port: int = 8000
+    
     # Application
     app_name: str = "NED University Document Management System"
     app_version: str = "1.0.0"
@@ -26,7 +29,7 @@ class Settings(BaseSettings):
     max_file_size: int = 10485760  # 10MB
     
     # CORS
-    allowed_origins: str = "http://localhost:3000,http://localhost:3001"
+    allowed_origins: str = "http://localhost:3000,http://localhost:3001,https://document-reader-chi.vercel.app"
     
     # Tesseract
     tesseract_cmd: str = "/usr/bin/tesseract"

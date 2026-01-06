@@ -1,6 +1,6 @@
 # Application Status
 
-**Last Updated**: 2026-01-07 00:29:00
+**Last Updated**: 2026-01-07 00:32:00
 
 ## ✅ All Systems Running
 
@@ -31,7 +31,13 @@
 
 ## Recent Fixes Applied
 
-### 1. ✅ Fixed "Failed to fetch" Error
+### 1. ✅ Fixed Statistics Endpoint SQLAlchemy Error
+- **Error**: `'Session' object has no attribute 'func'`
+- **Fix**: Added `from sqlalchemy import func` import
+- **Changed**: `db.func.count()` → `func.count()`
+- **Status**: Endpoint now returns data successfully
+
+### 2. ✅ Fixed "Failed to fetch" Error
 - Added error handling to API calls
 - Created `START_SERVERS.bat` for easy startup
 - Updated `RUNNING_LOCALLY.md` with troubleshooting

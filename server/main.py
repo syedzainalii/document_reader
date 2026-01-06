@@ -2,6 +2,7 @@ from fastapi import FastAPI, File, UploadFile, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from typing import List, Optional
 import os
 import shutil
@@ -417,7 +418,7 @@ async def get_statistics(
         # Get students by department
         departments = db.query(
             Student.department,
-            db.func.count(Student.id)
+            func.count(Student.id)
         ).group_by(Student.department).all()
         
         # Get recent uploads (last 7 days)

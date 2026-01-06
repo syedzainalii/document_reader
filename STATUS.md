@@ -42,17 +42,17 @@
 - Created `START_SERVERS.bat` for easy startup
 - Updated `RUNNING_LOCALLY.md` with troubleshooting
 
-### 2. ✅ Fixed "Database does not exist" Error
+### 3. ✅ Fixed "Database does not exist" Error
 - Created `server/setup_database.py` script
 - Created `server/SETUP_DATABASE.bat` for Windows
 - Database and tables successfully created
 
-### 3. ✅ Removed Vercel Serverless Configuration
+### 4. ✅ Removed Vercel Serverless Configuration
 - Removed `server/vercel.json`
 - Configured for Railway deployment only
 - Pure FastAPI application ready
 
-### 4. ✅ Updated Next.js
+### 5. ✅ Updated Next.js
 - Upgraded from 15.1.4 to 16.1.1
 - Fixed security vulnerability CVE-2025-66478
 

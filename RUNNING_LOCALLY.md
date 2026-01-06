@@ -1,5 +1,47 @@
 # Running the Application Locally
 
+## Prerequisites
+
+1. **PostgreSQL** installed and running
+2. **Python 3.11+** installed
+3. **Node.js 18+** installed
+
+## First-Time Setup
+
+### 1. Setup Database (Required - First Time Only)
+
+Run the database setup script:
+
+```bash
+# Windows
+cd server
+SETUP_DATABASE.bat
+
+# Mac/Linux
+cd server
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python setup_database.py
+```
+
+This will:
+- Create the `ned_university_docs` database
+- Initialize all required tables
+- Verify the setup
+
+**If you prefer manual setup:**
+```sql
+# Open PostgreSQL command line (psql)
+psql -U postgres
+
+# Create the database
+CREATE DATABASE ned_university_docs;
+
+# Exit psql
+\q
+```
+
 ## Quick Start
 
 ### Option 1: Use the Start Script (Windows)
@@ -118,15 +160,27 @@ lsof -ti:3000 | xargs kill -9
 
 ### Database Connection Error
 
-Make sure PostgreSQL is running and the database exists:
+**Error**: `database "ned_university_docs" does not exist`
 
+**Solution**: Run the database setup script:
+
+```bash
+cd server
+# Windows:
+SETUP_DATABASE.bat
+
+# Mac/Linux:
+python setup_database.py
+```
+
+**Or create manually**:
 ```bash
 # Check if PostgreSQL is running
 # Windows: Services -> PostgreSQL
 # Mac: brew services list
 # Linux: sudo systemctl status postgresql
 
-# Create database (if needed)
+# Create database
 psql -U postgres
 CREATE DATABASE ned_university_docs;
 \q

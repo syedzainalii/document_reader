@@ -83,15 +83,28 @@ export const api = {
       params.append('query', query);
     }
 
-    const response = await fetch(`${API_URL}/api/students?${params}`, {
-      headers: getAuthHeaders(),
-    });
+    try {
+      const response = await fetch(`${API_URL}/api/students?${params}`, {
+        headers: getAuthHeaders(),
+      });
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch students');
+      if (!response.ok) {
+        throw new Error('Failed to fetch students');
+      }
+
+      return response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        console.error('Cannot connect to backend server at:', API_URL);
+        return {
+          total: 0,
+          page: page,
+          page_size: pageSize,
+          students: [],
+        };
+      }
+      throw error;
     }
-
-    return response.json();
   },
 
   async getStudent(id: number): Promise<Student> {
@@ -157,20 +170,34 @@ export const api = {
       throw new Error('Not authenticated');
     }
 
-    const response = await fetch(`${API_URL}/api/stats`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      const response = await fetch(`${API_URL}/api/stats`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Statistics fetch failed:', response.status, errorText);
-      throw new Error(`Failed to fetch statistics: ${response.status}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Statistics fetch failed:', response.status, errorText);
+        throw new Error(`Failed to fetch statistics: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        console.error('Cannot connect to backend server at:', API_URL);
+        console.error('Please start the backend server with: cd server && python main.py');
+        // Return default values when backend is not available
+        return {
+          total_students: 0,
+          recent_uploads: 0,
+          departments: [],
+        };
+      }
+      throw error;
     }
-
-    return response.json();
   },
 
   getFileUrl(studentId: string, filename: string): string {
